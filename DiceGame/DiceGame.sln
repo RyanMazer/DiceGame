@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiceGame", "DiceGame.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RegisterSession", "..\RegisterSession\RegisterSession.csproj", "{DD40DF72-EF6D-482A-8358-133EC1965D83}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetDiceList", "..\GetDiceList\GetDiceList.csproj", "{6F6649C5-E972-499A-8899-025B0DAA8C10}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiceList", "..\GetDiceList\DiceList.csproj", "{6F6649C5-E972-499A-8899-025B0DAA8C10}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -5,40 +5,51 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
 namespace DiceGame
 {
     public class Core
     {
-        private List<Dice> dice = new List<Dice>();
+        private List<Dice> diceList;
+        public List<Dice> DiceList { get { return diceList; } }
+
         private Dice currentDice = null;
+        public Dice CurrentDice { get { return currentDice; } }
+        private Loading loading;
 
         public Core()
         {
-            string[] sides = { "1", "2", "3", "4", "5", "6" };
-            Dice newdice = new Dice(sides, "d6");
-            dice.Add(newdice);
-        }
-
-        public List<Dice> UpdateDiceList()
-        {
-            return dice;
+            loading = new Loading();
+            diceList = new List<Dice>();
         }
 
         public void selectDice(string diceName)
         {
             if (diceName != null)
-                foreach (Dice d in dice)
+            {
+                foreach (Dice d in diceList)
                     if (d.getName() == diceName)
+                    {
                         currentDice = d;
-                    else
-                        MessageBox.Show("Something went wrong. Contact Developer!", "Error", MessageBoxButtons.OK);
+                    }
+            }
             else
                 MessageBox.Show("Something went wrong. You shouldnt be able to select an empty dice! Contact Developer plz!", "Error", MessageBoxButtons.OK);
         }
 
-        public void Intialize()
+        public async Task Intialize()
         {
+            var ReqResult = await HTTP.getDiceListAsync();
 
+            foreach (var dice in ReqResult)
+            {
+                string[] faces = dice.diceFace.Split(',');
+
+                Dice newDice = new Dice(faces, dice.diceName);
+                diceList.Add(newDice);
+            }
+
+            await HTTP.UpdateDiceListAsync();
         }
 
         public string RollDice()

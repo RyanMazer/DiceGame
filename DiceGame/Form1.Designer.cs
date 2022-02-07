@@ -195,7 +195,7 @@
             this.Controls.Add(this.NameInput);
             this.Name = "Main";
             this.Text = "DiceGane";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Shown += new System.EventHandler(this.Main_Shown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

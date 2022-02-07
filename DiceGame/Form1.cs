@@ -19,16 +19,6 @@ namespace DiceGame
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            var dice = core.UpdateDiceList();
-
-            foreach (var i in dice)
-            {
-                DiceList.Items.Add(i.getName());
-            }
-        }
-
         private void Settings_Click(object sender, EventArgs e)
         {
 
@@ -53,15 +43,30 @@ namespace DiceGame
         {
             string output = core.RollDice();
 
-            if(Result.Text != String.Empty)
-                History.Items.Add(Result.Text);
-            
+            if(output == null)
+                return;
+
+            History.Items.Add(output);
             Result.Text = output;
         }
 
         private void DiceList_SelectedIndexChanged(object sender, EventArgs e)
         {
             core.selectDice(DiceList.SelectedItem.ToString()); 
+        }
+
+        private async void Main_Shown(object sender, EventArgs e)
+        {
+            await core.Intialize();
+
+            var dice = core.DiceList;
+
+            foreach (var i in dice)
+            {
+                DiceList.Items.Add(i.getName());
+            }
+
+            DiceList.SelectedIndex = 1;
         }
     }
 }

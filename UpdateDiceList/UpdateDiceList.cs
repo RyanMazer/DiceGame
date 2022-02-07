@@ -9,13 +9,13 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace DiceList
+namespace UpdateDiceList
 {
-    public static class GetDiceList
+    public static class UpdateDiceList
     {
         [FunctionName("GetDiceList")]
         public static async Task<IActionResult> Run(
-    [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetDiceList")] HttpRequest req,
+    [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "getdicelist")] HttpRequest req,
     ILogger log,
     [Sql("select * from Dice",
     CommandType = System.Data.CommandType.Text,
@@ -25,4 +25,5 @@ namespace DiceList
             return new OkObjectResult(Dice);
         }
     }
+}
 }

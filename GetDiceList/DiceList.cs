@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GetDiceList
+namespace DiceList
 {
     public class DiceList
     {
