@@ -7,21 +7,40 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DiceGame.Source; 
 
-namespace DiceGame
+namespace DiceGame.Forms
 {
     public partial class Main : Form
     {
-        Core core = null; 
+        private Core core = null;
+        private DiceEdit diceEdit;
+
         public Main(Core a_core)
         {
             core = a_core;
+            diceEdit = new DiceEdit();
+            diceEdit.bindSave(saveDice);
+            diceEdit.UploadAction(UploadAsync); 
+
             InitializeComponent();
         }
 
-        private void Settings_Click(object sender, EventArgs e)
+        //This function is Async because the messagebox locks the main thread
+        //Which causes a crash when the diceloading actually finishes
+        //By making this function async it prevents locking the main thread and lets diceloading finish cleanly
+        private async void Settings_Click(object sender, EventArgs e)
         {
-
+            if (core.ELoadingState != ELoadingState.S_Loaded)
+            {
+                if (core.ELoadingState != ELoadingState.S_Failed)
+                    MessageBox.Show("Please wait while the dicelist is being loaded", "Please Wait", MessageBoxButtons.OK);
+            }
+            else
+            {
+                diceEdit.Show();
+                diceEdit.loadDiceList(core.DiceList); 
+            }
         }
 
         private void SessionOpen_Click(object sender, EventArgs e)
@@ -67,6 +86,16 @@ namespace DiceGame
             }
 
             DiceList.SelectedIndex = 1;
+        }
+
+        public void saveDice(List<Dice> a_diceList)
+        {
+            core.saveDice(a_diceList);
+        }
+
+        public async void UploadAsync()
+        {
+            core.StartUploadAsync(); 
         }
     }
 }

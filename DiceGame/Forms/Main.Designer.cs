@@ -1,4 +1,4 @@
-﻿namespace DiceGame
+﻿namespace DiceGame.Forms
 {
     partial class Main
     {
@@ -66,7 +66,7 @@
             this.Settings.Name = "Settings";
             this.Settings.Size = new System.Drawing.Size(148, 52);
             this.Settings.TabIndex = 2;
-            this.Settings.Text = "Settings";
+            this.Settings.Text = "DiceList";
             this.Settings.UseVisualStyleBackColor = true;
             this.Settings.Click += new System.EventHandler(this.Settings_Click);
             // 

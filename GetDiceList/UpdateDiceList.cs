@@ -18,7 +18,6 @@ namespace DiceList
     [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "UpdateDiceList")] HttpRequest req,
 [Sql("Dice", ConnectionStringSetting = "SqlConnectionString")] ICollector<DiceList> diceList)
         {
-            var bodyt = await req.ReadAsStringAsync(); 
             var body = await req.ReadFormAsync();
 
             foreach (var i in body)
