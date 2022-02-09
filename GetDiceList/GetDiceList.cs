@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace DiceList
+namespace Dice
 {
     public static class GetDiceList
     {

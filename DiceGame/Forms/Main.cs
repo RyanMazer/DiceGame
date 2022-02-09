@@ -24,6 +24,8 @@ namespace DiceGame.Forms
             diceEdit.UploadAction(UploadAsync); 
 
             InitializeComponent();
+            Console.WriteLine(Environment.MachineName);
+
         }
 
         //This function is Async because the messagebox locks the main thread
@@ -43,9 +45,9 @@ namespace DiceGame.Forms
             }
         }
 
-        private void SessionOpen_Click(object sender, EventArgs e)
+        private async void SessionOpen_Click(object sender, EventArgs e)
         {
-
+            await HTTP.RegisterSession("TestingSession");
         }
 
         private void Kick_Click(object sender, EventArgs e)
@@ -53,9 +55,9 @@ namespace DiceGame.Forms
 
         }
 
-        private void End_Click(object sender, EventArgs e)
+        private async void End_Click(object sender, EventArgs e)
         {
-
+            await HTTP.CloseSessionAsync("TestingSession");
         }
 
         private void Roll_Click(object sender, EventArgs e)
