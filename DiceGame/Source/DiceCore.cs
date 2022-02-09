@@ -99,7 +99,7 @@ namespace DiceGame.Source
             List<Dice> deleted;
 
             if (a_diceList != null)
-                if(a_diceList != DiceList)
+                if(a_diceList != diceList)
                 {
                     deleted = diceList.Except(a_diceList).ToList();
                     update = a_diceList.Except(diceList, new DiceComparer()).ToList();
@@ -110,6 +110,8 @@ namespace DiceGame.Source
                         uploadQueue.Add(EUploadType.T_Delete, deleted);
                     if(update != null && update.Count > 0)
                         uploadQueue.Add(EUploadType.T_Update, update);
+
+                    diceList = a_diceList;
                 }
         }
 

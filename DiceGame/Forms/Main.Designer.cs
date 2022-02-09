@@ -193,6 +193,8 @@
             this.Controls.Add(this.Settings);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.NameInput);
+            this.MaximumSize = new System.Drawing.Size(540, 510);
+            this.MinimumSize = new System.Drawing.Size(540, 510);
             this.Name = "Main";
             this.Text = "DiceGane";
             this.Shown += new System.EventHandler(this.Main_Shown);

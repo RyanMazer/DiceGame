@@ -70,7 +70,7 @@ namespace DiceGame.Source
 
             string uri = host + path;
 
-            Console.WriteLine("Updat Hit");
+            Console.WriteLine("Update Hit");
 
             try
             {

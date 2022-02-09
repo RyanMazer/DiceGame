@@ -7,8 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows; 
-using DiceGame.Source; 
+using System.Windows;
+using DiceGame.Source;
 
 namespace DiceGame.Forms
 {
@@ -20,7 +20,7 @@ namespace DiceGame.Forms
         private Action upload;
         public void UploadAction(Action func) { upload = func; }
 
-        bool saved = false; 
+        bool saved = false;
 
         public bool diceLoaded { get { return DiceList.Nodes.Count > 0; } }
 
@@ -31,13 +31,13 @@ namespace DiceGame.Forms
 
         public void loadDiceList(List<Dice> a_dice)
         {
-            DiceList.Nodes.Clear(); 
+            DiceList.Nodes.Clear();
 
             foreach (Dice dice in a_dice)
             {
                 TreeNode node = DiceList.Nodes.Add(dice.getName());
                 foreach (string s in dice.getFaces())
-                    node.Nodes.Add(s); 
+                    node.Nodes.Add(s);
             }
         }
 
@@ -72,7 +72,7 @@ namespace DiceGame.Forms
 
         private void DiceList_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
         {
-            saved = false; 
+            saved = false;
         }
 
         private void SaveDice(object sender, EventArgs e)
@@ -82,25 +82,45 @@ namespace DiceGame.Forms
 
         private async void Upload_Click(object sender, EventArgs e)
         {
-            if(!saved)
+            if (!saved)
                 Save();
-            
-            upload.Invoke(); 
+
+            upload.Invoke();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            if(DiceList.SelectedNode != null)
+            if (DiceList.SelectedNode != null)
             {
-                saved = false; 
-                DiceList.SelectedNode.Remove(); 
+                saved = false;
+                DiceList.SelectedNode.Remove();
             }
         }
 
         private void DiceEdit_FormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = true;
-            this.Hide(); 
+            this.Hide();
+        }
+
+        private void MouseClick(object sender, MouseEventArgs e)
+        {
+            int totalHeight = DiceList.ItemHeight * DiceList.Nodes.Count;
+
+            if (!(e.X < 100 && e.X >= 0) || !(e.Y < totalHeight && e.Y >= 0))
+                DiceList.SelectedNode = null;
+        }
+
+        private void Add(object sender, EventArgs e)
+        {
+            if(DiceList.SelectedNode == null)
+            {
+                DiceList.Nodes.Add("NewDice"); 
+            }
+            else
+            {
+                DiceList.SelectedNode.Nodes.Add("New Face"); 
+            }    
         }
     }
 }
