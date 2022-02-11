@@ -19,9 +19,13 @@ namespace DiceGame.Forms
         public Main(Core a_core)
         {
             core = a_core;
+            
             diceEdit = new DiceEdit();
             diceEdit.bindSave(saveDice);
-            diceEdit.UploadAction(UploadAsync); 
+            diceEdit.UploadAction(UploadAsync);
+
+            core.UpdateRoll = UpdateRoll;
+            core.UpdateList = UpdateDiceList;
 
             InitializeComponent();
             Console.WriteLine(Environment.MachineName);
@@ -47,7 +51,8 @@ namespace DiceGame.Forms
 
         private async void SessionOpen_Click(object sender, EventArgs e)
         {
-            await HTTP.RegisterSession("TestingSession");
+            //await HTTP.RegisterSession("TestingSession");
+            await SingalRServer.InitializeServer();
         }
 
         private void Kick_Click(object sender, EventArgs e)
@@ -62,13 +67,17 @@ namespace DiceGame.Forms
 
         private void Roll_Click(object sender, EventArgs e)
         {
-            string output = core.RollDice();
+            if(core != null)
+                core.RollDice();
+        }
 
-            if(output == null)
+        public void UpdateRoll(string roll)
+        {
+            if (roll == string.Empty)
                 return;
 
-            History.Items.Add(output);
-            Result.Text = output;
+            History.Items.Add(roll);
+            Result.Text = roll;
         }
 
         private void DiceList_SelectedIndexChanged(object sender, EventArgs e)
@@ -80,6 +89,11 @@ namespace DiceGame.Forms
         {
             await core.Intialize();
 
+            UpdateDiceList();
+        }
+
+        private void UpdateDiceList()
+        {
             var dice = core.DiceList;
 
             foreach (var i in dice)
@@ -98,6 +112,12 @@ namespace DiceGame.Forms
         public async void UploadAsync()
         {
             core.StartUploadAsync(); 
+        }
+
+        private async void Join_Click(object sender, EventArgs e)
+        {
+            await SignalRConnector.Connect($"http://82.73.229.223:8080");
+            //await SignalRConnector.Connect($"http://{NetUtil.GetLocalIPAddress()}:8080");
         }
     }
 }

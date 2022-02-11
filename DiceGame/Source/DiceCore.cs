@@ -18,6 +18,13 @@ namespace DiceGame.Source
         S_Failed
     }
 
+    public enum ESessionState
+    {
+        S_None,
+        S_Open, 
+        S_Closed,
+    }
+
     public enum EUploadType
     {
         T_Delete, 
@@ -35,7 +42,13 @@ namespace DiceGame.Source
         private ELoadingState loading = ELoadingState.S_Empty;
         public ELoadingState ELoadingState { get { return loading; } }
 
-        private Dictionary<EUploadType, List<Dice>> uploadQueue; 
+        private Dictionary<EUploadType, List<Dice>> uploadQueue;
+
+        private Action<string> updateRoll;
+        public Action<string> UpdateRoll { set { updateRoll = value; } }
+
+        private Action updateList;
+        public Action UpdateList { set { updateList = value; } }
 
         private void LoadingState(ELoadingState state)
         {
@@ -67,18 +80,14 @@ namespace DiceGame.Source
         {
             var ReqResult = await HTTP.getDiceListAsync(LoadingState);
 
-            foreach (var dice in ReqResult)
-            {
-                string[] faces = dice.diceFace.Split(',');
-
-                Dice newDice = new Dice(faces, dice.diceName);
-                diceList.Add(newDice);
-            }
+            diceList = Statics.GetDiceList(ReqResult);
 
             //await HTTP.UpdateDiceListAsync(DiceList);
         }
 
-        public string RollDice()
+
+
+        public void RollDice()
         {
             string output = "";
 
@@ -90,7 +99,7 @@ namespace DiceGame.Source
             else
                 MessageBox.Show("Select a dice to roll", "Error", MessageBoxButtons.OK);
 
-            return output;
+            updateRoll(output); 
         }
 
         public void saveDice(List<Dice> a_diceList)
@@ -112,6 +121,7 @@ namespace DiceGame.Source
                         uploadQueue.Add(EUploadType.T_Update, update);
 
                     diceList = a_diceList;
+                    updateList(); 
                 }
         }
 

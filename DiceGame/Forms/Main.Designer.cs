@@ -42,6 +42,7 @@
             this.History = new System.Windows.Forms.ListBox();
             this.label4 = new System.Windows.Forms.Label();
             this.DiceList = new System.Windows.Forms.ComboBox();
+            this.Join = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // NameInput
@@ -74,7 +75,7 @@
             // 
             this.SessionOpen.Location = new System.Drawing.Point(364, 111);
             this.SessionOpen.Name = "SessionOpen";
-            this.SessionOpen.Size = new System.Drawing.Size(148, 52);
+            this.SessionOpen.Size = new System.Drawing.Size(75, 52);
             this.SessionOpen.TabIndex = 3;
             this.SessionOpen.Text = "Start Public Session";
             this.SessionOpen.UseVisualStyleBackColor = true;
@@ -174,11 +175,22 @@
             this.DiceList.TabIndex = 13;
             this.DiceList.SelectedIndexChanged += new System.EventHandler(this.DiceList_SelectedIndexChanged);
             // 
+            // Join
+            // 
+            this.Join.Location = new System.Drawing.Point(446, 111);
+            this.Join.Name = "Join";
+            this.Join.Size = new System.Drawing.Size(66, 52);
+            this.Join.TabIndex = 14;
+            this.Join.Text = "Join";
+            this.Join.UseVisualStyleBackColor = true;
+            this.Join.Click += new System.EventHandler(this.Join_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(524, 471);
+            this.Controls.Add(this.Join);
             this.Controls.Add(this.DiceList);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.History);
@@ -219,6 +231,7 @@
         private System.Windows.Forms.ListBox History;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox DiceList;
+        private System.Windows.Forms.Button Join;
     }
 }
 
