@@ -43,7 +43,7 @@
             this.DiceList.Size = new System.Drawing.Size(171, 378);
             this.DiceList.TabIndex = 0;
             this.DiceList.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.DiceList_AfterLabelEdit);
-            this.DiceList.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MouseClick);
+            this.DiceList.MouseUp += new System.Windows.Forms.MouseEventHandler(this.DiceMouseClick);
             // 
             // button1
             // 

@@ -21,8 +21,7 @@ namespace DiceGame.Source
 
             HTTP.Initialize(); 
 
-            Core core = new Core();
-            Main MainMenu = new Main(core);
+            Main MainMenu = new Main();
 
             Application.Run(MainMenu);
         }

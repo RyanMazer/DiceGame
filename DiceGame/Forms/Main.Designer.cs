@@ -63,7 +63,7 @@
             // 
             // Settings
             // 
-            this.Settings.Location = new System.Drawing.Point(364, 53);
+            this.Settings.Location = new System.Drawing.Point(364, 319);
             this.Settings.Name = "Settings";
             this.Settings.Size = new System.Drawing.Size(148, 52);
             this.Settings.TabIndex = 2;
@@ -73,7 +73,7 @@
             // 
             // SessionOpen
             // 
-            this.SessionOpen.Location = new System.Drawing.Point(364, 111);
+            this.SessionOpen.Location = new System.Drawing.Point(364, 52);
             this.SessionOpen.Name = "SessionOpen";
             this.SessionOpen.Size = new System.Drawing.Size(75, 52);
             this.SessionOpen.TabIndex = 3;
@@ -94,7 +94,7 @@
             // Players
             // 
             this.Players.FormattingEnabled = true;
-            this.Players.Location = new System.Drawing.Point(364, 186);
+            this.Players.Location = new System.Drawing.Point(363, 124);
             this.Players.Name = "Players";
             this.Players.Size = new System.Drawing.Size(148, 160);
             this.Players.TabIndex = 5;
@@ -102,7 +102,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(364, 170);
+            this.label2.Location = new System.Drawing.Point(363, 108);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(44, 13);
             this.label2.TabIndex = 6;
@@ -110,7 +110,7 @@
             // 
             // Kick
             // 
-            this.Kick.Location = new System.Drawing.Point(364, 352);
+            this.Kick.Location = new System.Drawing.Point(363, 290);
             this.Kick.Name = "Kick";
             this.Kick.Size = new System.Drawing.Size(75, 23);
             this.Kick.TabIndex = 7;
@@ -139,7 +139,7 @@
             // 
             // End
             // 
-            this.End.Location = new System.Drawing.Point(445, 352);
+            this.End.Location = new System.Drawing.Point(444, 290);
             this.End.Name = "End";
             this.End.Size = new System.Drawing.Size(67, 23);
             this.End.TabIndex = 10;
@@ -150,7 +150,7 @@
             // History
             // 
             this.History.FormattingEnabled = true;
-            this.History.Location = new System.Drawing.Point(12, 36);
+            this.History.Location = new System.Drawing.Point(9, 36);
             this.History.Name = "History";
             this.History.Size = new System.Drawing.Size(346, 381);
             this.History.TabIndex = 11;
@@ -177,7 +177,7 @@
             // 
             // Join
             // 
-            this.Join.Location = new System.Drawing.Point(446, 111);
+            this.Join.Location = new System.Drawing.Point(445, 52);
             this.Join.Name = "Join";
             this.Join.Size = new System.Drawing.Size(66, 52);
             this.Join.TabIndex = 14;

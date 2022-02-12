@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -77,10 +76,11 @@ namespace DiceGame.Forms
 
         private void SaveDice(object sender, EventArgs e)
         {
+            if(saved == false)
             Save();
         }
 
-        private async void Upload_Click(object sender, EventArgs e)
+        private void Upload_Click(object sender, EventArgs e)
         {
             if (!saved)
                 Save();
@@ -103,14 +103,6 @@ namespace DiceGame.Forms
             this.Hide();
         }
 
-        private void MouseClick(object sender, MouseEventArgs e)
-        {
-            int totalHeight = DiceList.ItemHeight * DiceList.Nodes.Count;
-
-            if (!(e.X < 100 && e.X >= 0) || !(e.Y < totalHeight && e.Y >= 0))
-                DiceList.SelectedNode = null;
-        }
-
         private void Add(object sender, EventArgs e)
         {
             if(DiceList.SelectedNode == null)
@@ -121,6 +113,14 @@ namespace DiceGame.Forms
             {
                 DiceList.SelectedNode.Nodes.Add("New Face"); 
             }    
+        }
+
+        private void DiceMouseClick(object sender, MouseEventArgs e)
+        {
+            int totalHeight = DiceList.ItemHeight * DiceList.Nodes.Count;
+
+            if (!(e.X < 100 && e.X >= 0) || !(e.Y < totalHeight && e.Y >= 0))
+                DiceList.SelectedNode = null;
         }
     }
 }

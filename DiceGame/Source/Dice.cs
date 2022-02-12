@@ -15,12 +15,18 @@ namespace DiceGame.Source
     public class Dice
     {
         private string[] faces;
+        public string[] Faces { get { return faces; } set { faces = value; } }
         private string name;
+        public string Name { get { return name; } set { name = value; } }
 
         public Dice(string[] a_dice, string a_name)
         {
             faces = a_dice;
             name = a_name;
+        }
+        public Dice()
+        {
+
         }
 
         public string[] getFaces()

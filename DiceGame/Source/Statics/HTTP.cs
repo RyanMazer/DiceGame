@@ -7,17 +7,10 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using System.IO;
 using System.Windows.Forms;
-using System.Management; 
+using System.Management;
 
 namespace DiceGame.Source
 {
-    public class DiceJson
-    {
-        [JsonProperty("diceName")]
-        public string diceName { get; set; }
-        [JsonProperty("diceFace")]
-        public string diceFace { get; set; }
-    }
 
     static class HTTP
     {
