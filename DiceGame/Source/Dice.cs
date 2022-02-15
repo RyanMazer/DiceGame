@@ -1,110 +1,107 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DiceGame.Source
 {
-    public struct rollResult
+    /// <summary>
+    /// Used to return both Dice Name and face the dice rolled on
+    /// </summary>
+    public struct RollResult
     {
-        public string name;
-        public string side;
+        public string Name;
+        public string Side;
     }
 
+    /// <summary>
+    /// Class used to store dice information
+    /// </summary>
     public class Dice
     {
-        private string[] faces;
-        public string[] Faces { get { return faces; } set { faces = value; } }
-        private string name;
-        public string Name { get { return name; } set { name = value; } }
-
-        public Dice(string[] a_dice, string a_name)
+        /// <summary>
+        /// Initialize Dice using name and faces
+        /// </summary>
+        /// <param name="aFaces">Faces the dice has</param>
+        /// <param name="aName">Dice name</param>
+        public Dice(string[] aFaces, string aName)
         {
-            faces = a_dice;
-            name = a_name;
+            Faces = aFaces;
+            Name = aName;
         }
+
         public Dice()
         {
-
         }
 
-        public string[] getFaces()
+        /// <summary>
+        /// Faces the dice can roll
+        /// </summary>
+        public string[] Faces { get; set; }
+
+        /// <summary>
+        /// Dice name
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Roll the dice, returning both name and face rolled
+        /// </summary>
+        /// <returns>Returns result in a struct</returns>
+        public RollResult Roll()
         {
-            return faces;
-        }
+            var roll = new RollResult();
 
-        public string getName()
-        {
-            return name;
-        }
+            var random = new Random();
+            var result = random.Next(Faces.Length);
 
-        public rollResult roll()
-        {
-            rollResult roll = new rollResult();
-
-            Random random = new Random();
-            int result = random.Next(faces.Length);
-
-            roll.name = name;
-            roll.side = faces[result];
+            roll.Name = Name;
+            roll.Side = Faces[result];
 
             return roll;
         }
 
+        /// <summary>
+        /// Overrides == with a check against dice names
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public override bool Equals(object obj)
         {
             var dice = obj as Dice;
-            
+
             if (dice == null) return false;
 
-            if (name != dice.getName())
-                return false;
-
-            //foreach (string s in faces)
-            //{
-            //    if (!dice.getFaces().Contains(s))
-            //        return false;
-            //}
-
-            return true; 
+            return Name == dice.Name;
         }
 
-        public override int GetHashCode()
-        {
-            return name.GetHashCode();
-        }
+        /// <summary>
+        /// Overrides hash code to go off name instead of going off object itself.
+        /// </summary>
+        /// <returns>Hashcode of the dice Name</returns>
+        public override int GetHashCode() => Name.GetHashCode();
     }
 
+    /// <summary>
+    /// Allows comparing Dice not just on name but faces as well
+    /// Mostly to show off another way of comparing objects
+    /// Could move into the == override on dice itself
+    /// </summary>
     public class DiceComparer : IEqualityComparer<Dice>
     {
         public int GetHashCode(Dice co)
         {
-            if (co == null)
-            {
-                return 0;
-            }
-            return co.getName().GetHashCode();
+            return co.Name.GetHashCode();
         }
 
         public bool Equals(Dice x1, Dice x2)
         {
-            if (object.ReferenceEquals(x1, x2))
-            {
-                return true;
-            }
-            if (object.ReferenceEquals(x1, null) ||
-                object.ReferenceEquals(x2, null))
-            {
-                return false;
-            }
+            if (ReferenceEquals(x1, x2)) return true;
+            if (x1 is null || x2 is null) return false;
+            if (x1.Name != x2.Name) return false;
 
-            if (x1.getName() != x2.getName())
-                return false;
-
-            foreach (string s in x1.getFaces())
+            foreach (var s in x1.Faces)
             {
-                if (!x2.getFaces().Contains(s))
+                if (!x2.Faces.Contains(s))
                     return false;
             }
 

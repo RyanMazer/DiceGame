@@ -1,24 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net.Http;
-using Newtonsoft.Json;
-using System.IO;
-using System.Windows.Forms;
 using System.Management;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Newtonsoft.Json;
 
 namespace DiceGame.Source
 {
-
-    static class HTTP
+    internal static class Http
     {
-        static string host = "https://dicegame3401.azure-api.net/3401diceGame";
+        /// <summary>
+        /// Link for this applications API 
+        /// </summary>
+        private static readonly string host = "https://dicegame3401.azure-api.net/3401diceGame";
 
-        static string key = "bf677d4f09554aeeaa6bf6c02da6ff57";
-        static HttpClient client;
+        /// <summary>
+        /// Authentication key for api access
+        /// </summary>
+        private static readonly string key = "bf677d4f09554aeeaa6bf6c02da6ff57";
+        private static HttpClient client;
 
+        /// <summary>
+        /// Initializes static class for HttpClient instance and sets Auth key in header
+        /// </summary>
         public static void Initialize()
         {
             client = new HttpClient();
@@ -26,59 +31,88 @@ namespace DiceGame.Source
             client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", key);
         }
 
+        /// <summary>
+        /// Static to get current external ip
+        /// Uses "https://ipinfo.io/ip"
+        /// </summary>
+        /// <returns>Current external Ip</returns>
+        public static async Task<string> GetIp()
+        {
+            try
+            {
+                var response = await client.GetAsync("https://ipinfo.io/ip");
+                return await response.Content.ReadAsStringAsync();
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine(e);
+                return "";
+            }
+        }
+
         #region DiceList
 
-        public async static Task<List<DiceJson>> getDiceListAsync(Action<ELoadingState> _state)
+        /// <summary>
+        /// Connects to API to get current dicelist from database
+        /// </summary>
+        /// <param name="aState">Function to update states</param>
+        /// <returns>List of Json Dice objects</returns>
+        public static async Task<List<DiceJson>> GetDiceListAsync(Action<ELoadingState> aState)
         {
-            string path = "/getdicelist";
+            const string path = "/getdicelist";
 
-            _state.Invoke(ELoadingState.S_Loading);
+            aState.Invoke(ELoadingState.S_Loading);
 
-            string uri = host + path;
+            var uri = host + path;
 
             try
             {
-                HttpResponseMessage response = await client.GetAsync(uri);
-                response.EnsureSuccessStatusCode();
+                var response = await client.GetAsync(uri);
+                response.EnsureSuccessStatusCode(); //If there was any error, this throws an exception
 
-                string contentString = await response.Content.ReadAsStringAsync();
+                var contentString = await response.Content.ReadAsStringAsync();
 
-                _state.Invoke(ELoadingState.S_Loaded);
+                aState.Invoke(ELoadingState.S_Loaded);
 
-                JsonSerializer serializer = new JsonSerializer();
-                List<DiceJson> json = JsonConvert.DeserializeObject<List<DiceJson>>(contentString);
+                //Convert Json from the http request into a list of objects
+                var json = JsonConvert.DeserializeObject<List<DiceJson>>(contentString);
 
                 return json;
             }
             catch (HttpRequestException ex)
             {
-                _state.Invoke(ELoadingState.S_Failed);
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK);
+                aState.Invoke(ELoadingState.S_Failed);
+                MessageBox.Show(ex.Message, @"Error", MessageBoxButtons.OK);
                 //Application.Exit();
             }
 
             return null;
         }
 
-        public async static Task UpdateDiceListAsync(List<Dice> a_dice)
+        /// <summary>
+        /// Called up upload new dice data into the database
+        /// Either new dice or updating old dice
+        /// </summary>
+        /// <param name="aDice">List of dice to update/add</param>
+        /// <returns></returns>
+        public static async Task UpdateDiceListAsync(List<Dice> aDice)
         {
-            string path = "/UpdateDiceList";
+            var path = "/UpdateDiceList";
 
-            string uri = host + path;
+            var uri = host + path;
 
-            Console.WriteLine("Update Hit");
+            Console.WriteLine(@"Update Hit");
 
             try
             {
-                MultipartFormDataContent content = new MultipartFormDataContent();
+                var content = new MultipartFormDataContent();
 
-                foreach (var dice in a_dice)
-                {
-                    content.Add(new StringContent(String.Join(",", dice.getFaces())), dice.getName());
-                }
+                //Convert list of dice into form data to send with the POST request
+                foreach (var dice in aDice)
+                    content.Add(new StringContent(string.Join(",", dice.Faces)), dice.Name);
 
                 var response = await client.PostAsync(uri, content);
-                response.EnsureSuccessStatusCode();
+                response.EnsureSuccessStatusCode(); //Throw exception if Http request returns error
 
                 Console.WriteLine(response.Content);
             }
@@ -89,60 +123,73 @@ namespace DiceGame.Source
             }
         }
 
-        public async static Task DeleteDiceAsync(List<Dice> a_dice)
+        /// <summary>
+        /// Called to delete given dice
+        /// </summary>
+        /// <param name="aDice">Dice to delete</param>
+        /// <returns></returns>
+        public static async Task DeleteDiceAsync(List<Dice> aDice)
         {
-            string path = "/DeleteDice";
+            const string path = "/DeleteDice";
 
-            string uri = host + path;
+            var uri = host + path;
 
-            Console.WriteLine("Delete Hit");
+            Console.WriteLine(@"Delete Hit");
 
             try
             {
-                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
-                MultipartFormDataContent content = new MultipartFormDataContent();
+                var req = new HttpRequestMessage(HttpMethod.Post, uri);
+                var content = new MultipartFormDataContent();
 
-                req.Headers.Add("passw", "TestingDice");
+                req.Headers.Add(@"passw", @"TestingDice");
 
-                foreach (var dice in a_dice)
-                {
-                    content.Add(new StringContent(""), dice.getName());
-                }
+                //Convert list of dice into form data to send with the POST request
+                foreach (var dice in aDice) 
+                    content.Add(new StringContent(""), dice.Name);
 
                 req.Content = content;
 
-                HttpResponseMessage response = await client.SendAsync(req);
+                var response = await client.SendAsync(req);
                 Console.WriteLine(await response.Content.ReadAsStringAsync());
-                response.EnsureSuccessStatusCode();
+                response.EnsureSuccessStatusCode(); //Throw exception if Http request returns error
             }
             catch (HttpRequestException ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK);
+                MessageBox.Show(ex.Message, @"Error", MessageBoxButtons.OK);
                 //Application.Exit();
             }
         }
+
         #endregion
 
         #region Sessions
-
-        public static async Task RegisterSession(string a_name, string a_password = "")
+        
+        /// <summary>
+        /// Called to register a session in the database using API calls
+        /// </summary>
+        /// <param name="aName">Session name</param>
+        /// <param name="aIp">Server Ip</param>
+        /// <param name="aPassword">Password (Not implemented)</param>
+        /// <returns></returns>
+        public static async Task RegisterSession(string aName, string aIp, string aPassword = "")
         {
-            string path = "/RegisterSession";
+            var path = "/RegisterSession";
 
-            string uri = host + path;
+            var uri = host + path;
 
-            Console.WriteLine("Registering Session");
+            Console.WriteLine(@"Registering Session");
 
             try
             {
-                MultipartFormDataContent content = new MultipartFormDataContent();
+                var content = new MultipartFormDataContent();
 
-                content.Add(new StringContent(a_name), "name");
-                content.Add(new StringContent(a_password), "pass");
-                content.Add(new StringContent(GetId()), "hostid");
+                //Add form data to send with the POST request
+                content.Add(new StringContent(aName), "name");
+                content.Add(new StringContent(aPassword), "pass");
+                content.Add(new StringContent(aIp), "ip");
 
                 var response = await client.PostAsync(uri, content);
-                response.EnsureSuccessStatusCode();
+                response.EnsureSuccessStatusCode(); //Throws exception if Http request returns error
 
                 Console.WriteLine(response.Content);
             }
@@ -153,41 +200,84 @@ namespace DiceGame.Source
             }
         }
 
-        public async static Task CloseSessionAsync(string a_name)
+        /// <summary>
+        /// Removes session register from database using Api calls
+        /// </summary>
+        /// <returns></returns>
+        public static async Task CloseSessionAsync()
         {
-            string path = "/CloseSession";
+            const string path = "/CloseSession";
 
-            string uri = host + path;
+            var uri = host + path;
 
-            Console.WriteLine("Closing Session");
+            Console.WriteLine(@"Closing Session");
 
             try
             {
-                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
-                MultipartFormDataContent content = new MultipartFormDataContent();
+                var req = new HttpRequestMessage(HttpMethod.Post, uri);
+                var content = new MultipartFormDataContent();
 
-                content.Add(new StringContent(a_name), "name");
-                content.Add(new StringContent(GetId()), "hostid");
+                var ip = await GetIp();
+
+                //Add form data to send with the POST request
+                content.Add(new StringContent(ip), "ip");
 
                 req.Content = content;
 
-                HttpResponseMessage response = await client.SendAsync(req);
-                Console.WriteLine(await response.Content.ReadAsStringAsync());
-                response.EnsureSuccessStatusCode();
+                var response = await client.SendAsync(req).ConfigureAwait(false);
+                Console.WriteLine(await response.Content.ReadAsStringAsync() + @" Session Closed");
+                response.EnsureSuccessStatusCode(); //Throws exception if Http request returns error
             }
             catch (HttpRequestException ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK);
+                MessageBox.Show(ex.Message, @"Error", MessageBoxButtons.OK);
             }
         }
 
-        private static string GetId()
+        /// <summary>
+        /// Gets currently registered sessions from the database using Api calls
+        /// </summary>
+        /// <returns>List of currently active servers</returns>
+        public static async Task<List<ServerJson>> GetSessionListAsync()
+        {
+            const string path = "/getSessionlist";
+
+            var uri = host + path;
+
+            try
+            {
+                var response = await client.GetAsync(uri);
+                response.EnsureSuccessStatusCode(); //Throws exception if Http request returns error
+
+                var contentString = await response.Content.ReadAsStringAsync();
+
+                //Convert http request json body into a list of usable objects
+                var json = JsonConvert.DeserializeObject<List<ServerJson>>(contentString);
+
+                return json;
+            }
+            catch (HttpRequestException ex)
+            {
+                MessageBox.Show(ex.Message, @"Error", MessageBoxButtons.OK);
+                //Application.Exit();
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Get Local IP. Note needed after refactor
+        /// </summary>
+        /// <returns></returns>
+        public static string GetId()
         {
             var mbs = new ManagementObjectSearcher("Select ProcessorId From Win32_processor");
-            ManagementObjectCollection mbsList = mbs.Get();
-            string id = "";
-            foreach (ManagementObject mo in mbsList)
+            var mbsList = mbs.Get();
+            var id = "";
+
+            foreach (var o in mbsList)
             {
+                var mo = (ManagementObject) o;
                 id = mo["ProcessorId"].ToString();
                 break;
             }

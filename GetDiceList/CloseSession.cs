@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -7,63 +7,41 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 
 namespace Dice
 {
-    public static class DeleteDiceList
+    public static class CloseSession
     {
-        [FunctionName("DeleteDice")]
+        [FunctionName("CloseSession")]
         public static async Task<IActionResult> Run(
-             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "deletedice/")] HttpRequest req,
-             ILogger log)
-        { 
+                     [HttpTrigger(AuthorizationLevel.Function, "post", Route ="CloseSession")] HttpRequest req,
+                     ILogger log)
+        {
             var connStr = Environment.GetEnvironmentVariable("SQLConnectionString");
-            //Seems to not work on a consumption subscription
-            //var passw = Environment.GetEnvironmentVariable("SecretsPassword", EnvironmentVariableTarget.Process);
-
-            string passw = "TestingDice"; 
-
-            if (!req.Headers.ContainsKey("passw"))
-                return new ConflictObjectResult("Missing header passw");
-
-            if (req.Headers["passw"] != passw)
-                return new ConflictObjectResult("Bad password"); 
 
             var body = await req.ReadFormAsync();
+
+            if (!body.ContainsKey("ip"))
+                return new ConflictObjectResult("Missing body");
 
             using (SqlConnection conn = new SqlConnection(connStr))
             {
                 conn.Open();
-                var command = "delete from Dice where DiceName in (";
 
-                int i  = 0;
-                foreach (var item in body)
-                {
-                    i++;
-                    command += "'" + item.Key + "'";
+                string Ip = body["ip"];
 
-                    if (body.Keys.Count < i)
-                    {
-                        command +=  ","; 
-                    }
-                }
-
-                command += ")"; 
+                var command = string.Format($"delete from Sessions where Ip = '{Ip}'");
 
                 SqlCommand comm = new SqlCommand(command, conn);
-                
+
                 int rows = comm.ExecuteNonQuery();
 
-                if (rows == body.Count)
+                if (rows == 1)
                     return new OkObjectResult("Sucess");
-                else if (rows > 0)
-                    return new ConflictObjectResult("1 or more rows were not deleted");
                 else
                     return new ConflictObjectResult("No rows were effected at all");
             }
         }
     }
 }
-

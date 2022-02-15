@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using DiceGame.Source.Base;
-using System.Windows.Forms; 
 
 namespace DiceGame.Source.Logic
 {
+    /// <summary>
+    /// Local Dice Logic class for locally updating, fetching and using dice data 
+    /// </summary>
     public class DiceLogicLocal : DiceLogicBase
     {
-        private Dictionary<EUploadType, List<Dice>> uploadQueue;
+        private readonly Dictionary<EUploadType, List<Dice>> uploadQueue;
 
-        public DiceLogicLocal() : base()
+        public DiceLogicLocal()
         {
-            uploadQueue = new Dictionary<EUploadType,List<Dice>>();
+            uploadQueue = new Dictionary<EUploadType, List<Dice>>();
         }
 
         public override void CloseLogic()
@@ -22,72 +24,87 @@ namespace DiceGame.Source.Logic
             //TODO Not sure what yet but keep it in mind
         }
 
+        /// <summary>
+        /// Called to roll currently selected dice
+        /// </summary>
+        /// <returns></returns>
         public override Task<string> DiceRoll()
         {
-            string output = "";
+            var output = "";
 
             if (currentDice != null)
             {
-                rollResult result = currentDice.roll();
-                output = "You rolled " + result.side + " on a" + result.name;
+                var result = currentDice.Roll();
+                output = "You rolled " + result.Side + " on a" + result.Name;
             }
             else
-                MessageBox.Show("Select a dice to roll", "Error", MessageBoxButtons.OK);
+            {
+                MessageBox.Show(@"Select a dice to roll", @"Error", MessageBoxButtons.OK);
+            }
 
-            return Task<string>.FromResult(output);
+            return Task.FromResult(output);
         }
 
-        public async override Task InitializeAsync()
+        /// <summary>
+        /// Initialize Dicelist using the Get Dice List Api
+        /// </summary>
+        /// <returns></returns>
+        public override async Task InitializeAsync()
         {
-            var diceJson = await HTTP.getDiceListAsync(UpdateState);
+            var diceJson = await Http.GetDiceListAsync(UpdateState);
             diceList = Statics.GetDiceList(diceJson);
         }
 
-        public void SaveDice(List<Dice> a_dice)
+        /// <summary>
+        /// Save new dicelist locally and initializes update and delete list for when the user decided to upload the new list. 
+        /// </summary>
+        /// <param name="aDice"></param>
+        public void SaveDice(List<Dice> aDice)
         {
             if (diceList == null)
             {
-                diceList = a_dice;
+                diceList = aDice;
                 return;
             }
 
-            List<Dice> update;
-            List<Dice> deleted;
+            if (aDice == diceList) return;
 
-            if (a_dice != diceList)
-            {
-                deleted = diceList.Except(a_dice).ToList();
-                update = a_dice.Except(diceList, new DiceComparer()).ToList();
+            var deleted = diceList.Except(aDice).ToList();
+            var update = aDice.Except(diceList, new DiceComparer()).ToList();
 
-                //TODO Handle multiple saves before upload. 
+            //TODO Handle multiple saves before upload. 
 
-                if (deleted != null && deleted.Count > 0)
-                    uploadQueue.Add(EUploadType.T_Delete, deleted);
-                if (update != null && update.Count > 0)
-                    uploadQueue.Add(EUploadType.T_Update, update);
+            if (deleted.Count > 0)
+                uploadQueue.Add(EUploadType.T_Delete, deleted);
+            if (update.Count > 0)
+                uploadQueue.Add(EUploadType.T_Update, update);
 
-                diceList = a_dice;
-            }
+            diceList = aDice;
         }
-
+        
+        /// <summary>
+        /// Initializes the upload of locally saved dicelist changes
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public async Task StartUploadAsync()
         {
             foreach (var upload in uploadQueue)
-            {
                 switch (upload.Key)
                 {
                     case EUploadType.T_Delete:
-                        {
-                            await HTTP.DeleteDiceAsync(upload.Value);
-                        }
+                    {
+                        await Http.DeleteDiceAsync(upload.Value);
+                    }
                         break;
                     case EUploadType.T_Update:
-                        {
-                            await HTTP.UpdateDiceListAsync(upload.Value);
-                        }
+                    {
+                        await Http.UpdateDiceListAsync(upload.Value);
+                    }
                         break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
-            }
         }
     }
 }

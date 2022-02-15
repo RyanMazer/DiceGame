@@ -43,6 +43,8 @@
             this.label4 = new System.Windows.Forms.Label();
             this.DiceList = new System.Windows.Forms.ComboBox();
             this.Join = new System.Windows.Forms.Button();
+            this.ServerName = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // NameInput
@@ -63,9 +65,9 @@
             // 
             // Settings
             // 
-            this.Settings.Location = new System.Drawing.Point(364, 319);
+            this.Settings.Location = new System.Drawing.Point(364, 345);
             this.Settings.Name = "Settings";
-            this.Settings.Size = new System.Drawing.Size(148, 52);
+            this.Settings.Size = new System.Drawing.Size(148, 26);
             this.Settings.TabIndex = 2;
             this.Settings.Text = "DiceList";
             this.Settings.UseVisualStyleBackColor = true;
@@ -73,9 +75,9 @@
             // 
             // SessionOpen
             // 
-            this.SessionOpen.Location = new System.Drawing.Point(364, 52);
+            this.SessionOpen.Location = new System.Drawing.Point(364, 97);
             this.SessionOpen.Name = "SessionOpen";
-            this.SessionOpen.Size = new System.Drawing.Size(75, 52);
+            this.SessionOpen.Size = new System.Drawing.Size(75, 34);
             this.SessionOpen.TabIndex = 3;
             this.SessionOpen.Text = "Start Public Session";
             this.SessionOpen.UseVisualStyleBackColor = true;
@@ -94,7 +96,7 @@
             // Players
             // 
             this.Players.FormattingEnabled = true;
-            this.Players.Location = new System.Drawing.Point(363, 124);
+            this.Players.Location = new System.Drawing.Point(364, 150);
             this.Players.Name = "Players";
             this.Players.Size = new System.Drawing.Size(148, 160);
             this.Players.TabIndex = 5;
@@ -102,7 +104,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(363, 108);
+            this.label2.Location = new System.Drawing.Point(361, 134);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(44, 13);
             this.label2.TabIndex = 6;
@@ -110,7 +112,7 @@
             // 
             // Kick
             // 
-            this.Kick.Location = new System.Drawing.Point(363, 290);
+            this.Kick.Location = new System.Drawing.Point(364, 316);
             this.Kick.Name = "Kick";
             this.Kick.Size = new System.Drawing.Size(75, 23);
             this.Kick.TabIndex = 7;
@@ -139,7 +141,7 @@
             // 
             // End
             // 
-            this.End.Location = new System.Drawing.Point(444, 290);
+            this.End.Location = new System.Drawing.Point(445, 316);
             this.End.Name = "End";
             this.End.Size = new System.Drawing.Size(67, 23);
             this.End.TabIndex = 10;
@@ -177,19 +179,37 @@
             // 
             // Join
             // 
-            this.Join.Location = new System.Drawing.Point(445, 52);
+            this.Join.Location = new System.Drawing.Point(445, 97);
             this.Join.Name = "Join";
-            this.Join.Size = new System.Drawing.Size(66, 52);
+            this.Join.Size = new System.Drawing.Size(66, 34);
             this.Join.TabIndex = 14;
             this.Join.Text = "Join";
             this.Join.UseVisualStyleBackColor = true;
             this.Join.Click += new System.EventHandler(this.Join_Click);
+            // 
+            // ServerName
+            // 
+            this.ServerName.Location = new System.Drawing.Point(365, 71);
+            this.ServerName.Name = "ServerName";
+            this.ServerName.Size = new System.Drawing.Size(147, 20);
+            this.ServerName.TabIndex = 15;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(364, 55);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(72, 13);
+            this.label5.TabIndex = 16;
+            this.label5.Text = "Server Name:";
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(524, 471);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.ServerName);
             this.Controls.Add(this.Join);
             this.Controls.Add(this.DiceList);
             this.Controls.Add(this.label4);
@@ -209,6 +229,7 @@
             this.MinimumSize = new System.Drawing.Size(540, 510);
             this.Name = "Main";
             this.Text = "DiceGane";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
             this.Shown += new System.EventHandler(this.Main_Shown);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -232,6 +253,8 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox DiceList;
         private System.Windows.Forms.Button Join;
+        private System.Windows.Forms.TextBox ServerName;
+        private System.Windows.Forms.Label label5;
     }
 }
 

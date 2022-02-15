@@ -1,61 +1,61 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows;
 using DiceGame.Source;
 
 namespace DiceGame.Forms
 {
+    /// <summary>
+    /// Form to edit current dicelist to save locally or upload to the database 
+    /// </summary>
     public partial class DiceEdit : Form
     {
+        private bool saved;
+
         private Action<List<Dice>> saveDice;
-        public void bindSave(Action<List<Dice>> func) { saveDice = func; }
+        public Action<List<Dice>> SaveDice { set { saveDice = value; } }
 
         private Action upload;
-        public void UploadAction(Action func) { upload = func; }
-
-        bool saved = false;
-
-        public bool diceLoaded { get { return DiceList.Nodes.Count > 0; } }
+        public Action Upload { set { upload = value; } }
 
         public DiceEdit()
         {
             InitializeComponent();
         }
 
-        public void loadDiceList(List<Dice> a_dice)
+        /// <summary>
+        /// Loads currently available dice into the listbox
+        /// </summary>
+        /// <param name="aDice"></param>
+        public void LoadDiceList(List<Dice> aDice)
         {
             DiceList.Nodes.Clear();
 
-            foreach (Dice dice in a_dice)
+            foreach (var dice in aDice)
             {
-                TreeNode node = DiceList.Nodes.Add(dice.getName());
-                foreach (string s in dice.getFaces())
+                var node = DiceList.Nodes.Add(dice.Name);
+                foreach (var s in dice.Faces)
                     node.Nodes.Add(s);
             }
         }
 
+        /// <summary>
+        /// Saves the current edits to the dicelist if there are any
+        /// </summary>
         private void Save()
         {
             if (saveDice != null)
             {
-                List<Dice> diceList = new List<Dice>();
+                var diceList = new List<Dice>();
 
+                //Converts the nodes and their children nodes into Dice objects
                 foreach (TreeNode node in DiceList.Nodes)
                 {
-                    string name = node.Text;
+                    var name = node.Text;
 
-                    List<string> face = new List<string>();
-                    foreach (TreeNode s in node.Nodes)
-                    {
-                        face.Add(s.Text);
-                    }
-                    Dice dice = new Dice(face.ToArray(), name);
+                    var face = new List<string>();
+                    foreach (TreeNode s in node.Nodes) face.Add(s.Text);
+                    var dice = new Dice(face.ToArray(), name);
                     diceList.Add(dice);
                 }
 
@@ -64,7 +64,7 @@ namespace DiceGame.Forms
             }
             else
             {
-                MessageBox.Show("Something went horribly wrong", "Error", MessageBoxButtons.OK);
+                MessageBox.Show(@"Something went horribly wrong", @"Error", MessageBoxButtons.OK);
                 Application.Exit();
             }
         }
@@ -74,10 +74,10 @@ namespace DiceGame.Forms
             saved = false;
         }
 
-        private void SaveDice(object sender, EventArgs e)
+        private void Save_Click(object sender, EventArgs e)
         {
-            if(saved == false)
-            Save();
+            if (saved == false)
+                Save();
         }
 
         private void Upload_Click(object sender, EventArgs e)
@@ -100,24 +100,22 @@ namespace DiceGame.Forms
         private void DiceEdit_FormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = true;
-            this.Hide();
+            Hide();
         }
 
-        private void Add(object sender, EventArgs e)
+        private void AddDice(object sender, EventArgs e)
         {
-            if(DiceList.SelectedNode == null)
-            {
-                DiceList.Nodes.Add("NewDice"); 
-            }
+            if (DiceList.SelectedNode == null)
+                DiceList.Nodes.Add("NewDice");
             else
-            {
-                DiceList.SelectedNode.Nodes.Add("New Face"); 
-            }    
+                DiceList.SelectedNode.Nodes.Add("New Face");
         }
 
         private void DiceMouseClick(object sender, MouseEventArgs e)
         {
-            int totalHeight = DiceList.ItemHeight * DiceList.Nodes.Count;
+            //Using current mouse location within listbox checks if mouse is outside specified bounds
+            //If true then selected node is set to null
+            var totalHeight = DiceList.ItemHeight * DiceList.Nodes.Count;
 
             if (!(e.X < 100 && e.X >= 0) || !(e.Y < totalHeight && e.Y >= 0))
                 DiceList.SelectedNode = null;

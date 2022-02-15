@@ -16,6 +16,6 @@ namespace Dice
     {
         public string Name { get; set; }
         public string Password { get; set; }
-        public string HostID { get; set; }
+        public string Ip { get; set; }
     }
 }

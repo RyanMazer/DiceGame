@@ -21,13 +21,13 @@ namespace Dice
 
             Session sess = new Session();
 
-            if (body.Keys.Contains("name") && body.Keys.Contains("hostid"))
+            if (body.Keys.Contains("name") && body.Keys.Contains("ip"))
             {
                 sess.Name = body["name"];
-                sess.HostID = body["HostID"];
+                sess.Ip = body["ip"];
             }
             else
-                return new ConflictObjectResult("Missing Body name or hostid");
+                return new ConflictObjectResult("Missing Body name or ip");
 
             if (body.Keys.Contains("pass"))
                 sess.Password = body["pass"];

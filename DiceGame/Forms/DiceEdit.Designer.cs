@@ -30,7 +30,7 @@
         {
             this.DiceList = new System.Windows.Forms.TreeView();
             this.button1 = new System.Windows.Forms.Button();
-            this.Upload = new System.Windows.Forms.Button();
+            this.UploadButton = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -54,18 +54,18 @@
             this.button1.TabIndex = 1;
             this.button1.Text = "Save";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.SaveDice);
+            this.button1.Click += new System.EventHandler(this.Save_Click);
             // 
-            // Upload
+            // UploadButton
             // 
-            this.Upload.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Upload.Location = new System.Drawing.Point(189, 293);
-            this.Upload.Name = "Upload";
-            this.Upload.Size = new System.Drawing.Size(146, 45);
-            this.Upload.TabIndex = 2;
-            this.Upload.Text = "Upload";
-            this.Upload.UseVisualStyleBackColor = true;
-            this.Upload.Click += new System.EventHandler(this.Upload_Click);
+            this.UploadButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.UploadButton.Location = new System.Drawing.Point(189, 293);
+            this.UploadButton.Name = "UploadButton";
+            this.UploadButton.Size = new System.Drawing.Size(146, 45);
+            this.UploadButton.TabIndex = 2;
+            this.UploadButton.Text = "Upload";
+            this.UploadButton.UseVisualStyleBackColor = true;
+            this.UploadButton.Click += new System.EventHandler(this.Upload_Click);
             // 
             // button2
             // 
@@ -83,9 +83,9 @@
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(63, 23);
             this.button3.TabIndex = 4;
-            this.button3.Text = "Add";
+            this.button3.Text = "AddDice";
             this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.Add);
+            this.button3.Click += new System.EventHandler(this.AddDice);
             // 
             // DiceEdit
             // 
@@ -94,7 +94,7 @@
             this.ClientSize = new System.Drawing.Size(348, 402);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
-            this.Controls.Add(this.Upload);
+            this.Controls.Add(this.UploadButton);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.DiceList);
             this.Name = "DiceEdit";
@@ -108,7 +108,7 @@
 
         private System.Windows.Forms.TreeView DiceList;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button Upload;
+        private System.Windows.Forms.Button UploadButton;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
     }
